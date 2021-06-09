@@ -10,11 +10,11 @@
 
 <body>
     <nav class="alert alert-dark navigation" role="alert">
-        <h1>Миссия Колонизация Марса</h1>
+        <h1>Торговля на Кубарионе</h1>
             {% if current_user.is_authenticated %}
                 <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
             {% else %}
-                <p>
+                <p class="login">
                     <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
                     <a class="btn btn-success" href="/login">Войти</a>
                 </p>

@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from werkzeug.exceptions import abort
 
 from data import db_session
-from data.jobs import Jobs
+from data.products import Product
 from data.users import User
 from data.departments import Department
 from forms.user import RegisterForm
@@ -32,7 +32,7 @@ def main():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    jobs = db_sess.query(Jobs).all()
+    jobs = db_sess.query(Product).all()
     return render_template("index.html", jobs=jobs)
 
 
@@ -93,13 +93,13 @@ def add_jobs():
     form = JobsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        job = Jobs()
-        job.job = form.job.data
-        job.team_leader = form.team_leader.data
-        job.work_size = form.work_size.data
-        job.collaborators = form.collaborators.data
-        job.is_finished = form.is_finished.data
-        current_user.jobs.append(job)
+        prod = Product()
+        prod.job = form.job.data
+        prod.team_leader = form.team_leader.data
+        prod.work_size = form.work_size.data
+        prod.collaborators = form.collaborators.data
+        prod.is_finished = form.is_finished.data
+        current_user.jobs.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
@@ -113,22 +113,22 @@ def edit_jobs(id):
     form = JobsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                          ((Jobs.leader == current_user) | (current_user.id == 1))
-                                          ).first()
-        if jobs:
-            form.job.data = jobs.job
-            form.team_leader.data = jobs.team_leader
-            form.work_size.data = jobs.work_size
-            form.collaborators.data = jobs.collaborators
-            form.is_finished.data = jobs.is_finished
+        prod = db_sess.query(Product).filter(Product.id == id,
+                                             ((Product.leader == current_user) | (current_user.id == 1))
+                                             ).first()
+        if prod:
+            form.job.data = prod.job
+            form.team_leader.data = prod.team_leader
+            form.work_size.data = prod.work_size
+            form.collaborators.data = prod.collaborators
+            form.is_finished.data = prod.is_finished
         else:
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                         ((Jobs.leader == current_user) | (current_user.id == 1))
-                                         ).first()
+                                          ((Jobs.leader == current_user) | (current_user.id == 1))
+                                          ).first()
         if jobs:
             jobs.job = form.job.data
             jobs.team_leader = form.team_leader.data
@@ -210,7 +210,7 @@ def edit_dep(id):
         db_sess = db_session.create_session()
         dep = db_sess.query(Department).filter(Department.id == id,
                                                ((Department.user == current_user) | (
-                                                           current_user.id == 1))
+                                                       current_user.id == 1))
                                                ).first()
         if dep:
             form.title.data = dep.title
@@ -223,7 +223,7 @@ def edit_dep(id):
         db_sess = db_session.create_session()
         dep = db_sess.query(Department).filter(Department.id == id,
                                                ((Department.user == current_user) | (
-                                                           current_user.id == 1))
+                                                       current_user.id == 1))
                                                ).first()
         if dep:
             dep.title = form.title.data
