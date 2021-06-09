@@ -97,9 +97,16 @@ def add_prod():
         current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
+        f = form.post_picture.data
+        save_image(f, prod.id)
         return redirect('/')
     return render_template('jobs.html', title='Добавление Товара',
                            form=form)
+
+
+def save_image(data, name):
+    with open(f'static/img/{name}.jpg', 'wb') as handler:
+        handler.write(data)
 
 
 """@app.route('/jobs/<int:id>', methods=['GET', 'POST'])
