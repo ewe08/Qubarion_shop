@@ -29,9 +29,14 @@ def main():
 
 @app.route("/")
 def index():
+    return render_template("index.html")
+
+
+@app.route("/shop")
+def shop():
     db_sess = db_session.create_session()
     prods = db_sess.query(Products).all()
-    return render_template("index.html", prods=prods)
+    return render_template("shop.html", prods=prods)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -97,17 +102,9 @@ def add_prod():
         current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
-        print(form.post_picture.has_file())
-        f = form.post_picture.data
-        save_image(f, prod.id)
-        return redirect('/')
-    return render_template('jobs.html', title='Добавление Товара',
+        return redirect('/shop')
+    return render_template('products.html', title='Добавление Товара',
                            form=form)
-
-
-def save_image(data, name):
-    with open(f'static/img/{name}.jpg', 'wb') as handler:
-        handler.write(data)
 
 
 @app.route('/prod/<int:id>', methods=['GET', 'POST'])
@@ -135,10 +132,10 @@ def edit_prod(id):
             prod.price = form.price.data
             prod.weight = form.weight.data
             db_sess.commit()
-            return redirect('/')
+            return redirect('/shop')
         else:
             abort(404)
-    return render_template('jobs.html',
+    return render_template('products.html',
                            title='Редактирование задания',
                            form=form
                            )
@@ -146,7 +143,7 @@ def edit_prod(id):
 
 @app.route('/prod_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def jobs_delete(id):
+def prod_delete(id):
     db_sess = db_session.create_session()
     prod = db_sess.query(Products).filter(Products.id == id,
                                           Products.leader == current_user).first()
@@ -155,7 +152,7 @@ def jobs_delete(id):
         db_sess.commit()
     else:
         abort(404)
-    return redirect('/')
+    return redirect('/shop')
 
 
 if __name__ == '__main__':

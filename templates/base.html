@@ -11,6 +11,12 @@
 <body>
     <nav class="alert alert-dark navigation" role="alert">
         <a href="/" class="home"><h1>Торговля на Кубарионе</h1></a>
+        <div class="nav">
+            <a href="/">Главная</a>
+            <a href="/shop">Магазин</a>
+        </div>
+
+
         {% if current_user.is_authenticated %}
             <a class="navbar-brand logout" href="/logout">{{ current_user.name }}</a>
         {% else %}
