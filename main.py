@@ -44,8 +44,12 @@ def money():
         return render_template('money.html')
     elif request.method == 'POST':
         db_sess = db_session.create_session()
-        a = db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
-        db_sess.commit()
+        try:
+            db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
+            db_sess.commit()
+        except ValueError:
+            return render_template('money.html',
+                                   message="Я понимаю только цифры")
         return render_template('shop.html')
 
 
@@ -115,24 +119,30 @@ def logout():
 @app.route('/addprod', methods=['GET', 'POST'])
 @login_required
 def add_prod():
-    form = ProductForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        prod = Products(
-            seller=current_user.id,
-            product=form.product.data,
-            price=form.price.data,
-            weight=form.weight.data
-        )
-        current_user.products.append(prod)
-        db_sess.merge(current_user)
-        db_sess.commit()
-        img = form.post_picture.data
-        obj = str(db_sess.query(Products)[-1].id)
-        img.save(os.path.join(app.config['UPLOAD_FOLDER'], f'{obj}.png'))
-        return redirect('/shop')
-    return render_template('products.html', title='Добавление Товара',
-                           form=form)
+    try:
+        form = ProductForm()
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            assert str(form.price.data).isdigit()
+            assert str(form.weight.data).isdigit()
+
+            prod = Products(
+                seller=current_user.id,
+                product=form.product.data,
+                price=form.price.data,
+                weight=form.weight.data
+            )
+            current_user.products.append(prod)
+            db_sess.merge(current_user)
+            db_sess.commit()
+            img = form.post_picture.data
+            obj = str(db_sess.query(Products)[-1].id)
+            img.save(os.path.join(app.config['UPLOAD_FOLDER'], f'{obj}.png'))
+            return redirect('/shop')
+        return render_template('products.html', title='Добавление Товара',
+                               form=form)
+    except Exception:
+        return render_template('products.html', message="Данные введены неверно", form=form)
 
 
 @app.route('/prod/<int:id>', methods=['GET', 'POST'])
@@ -192,6 +202,7 @@ def sell_prod(id):
         prod.leader.already_sold += 1
         user = db_sess.query(User).filter(User.id == current_user.id).first()
         user.balance -= prod.price
+        os.remove(f'static/img/{prod.id}.png')
         db_sess.delete(prod)
         db_sess.commit()
     else:
