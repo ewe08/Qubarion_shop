@@ -21,10 +21,10 @@
          {% if current_user.is_authenticated and (current_user == item.leader)%}
             <div>
                 <a href="/prod/{{ item.id }}" class="btn btn-warning">
-                    Edit job
+                    Исправить
                 </a>
                 <a href="/prod_delete/{{ item.id }}" class="btn btn-danger">
-                    Delete job
+                    Удалить
                 </a>
             </div>
             {% endif %}
