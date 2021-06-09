@@ -21,3 +21,7 @@ h4 {
 .navigation a{
    margin-left: auto;
 }
+
+.navigation p{
+    margin-right: auto;
+}
