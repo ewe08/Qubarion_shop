@@ -12,6 +12,7 @@ class Product(SqlAlchemyBase):
 
     seller = sqlalchemy.Column(sqlalchemy.Integer,
                                     sqlalchemy.ForeignKey("users.id"))
+    picture = sqlalchemy.Column(sqlalchemy.String)
     product = sqlalchemy.Column(sqlalchemy.String)
     weight = sqlalchemy.Column(sqlalchemy.Integer)
     price = sqlalchemy.Column(sqlalchemy.Integer)

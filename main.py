@@ -1,3 +1,5 @@
+import PIL
+
 from flask import render_template, redirect, request
 from flask import Flask
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
@@ -9,7 +11,7 @@ from data.users import User
 from data.departments import Department
 from forms.user import RegisterForm
 from forms.login import LoginForm
-from forms.jobs import JobsForm
+from forms.products import ProductForm
 from forms.departments import DepartmentsForm
 
 app = Flask(__name__)
@@ -26,7 +28,7 @@ def load_user(user_id):
 
 def main():
     db_sess = db_session.global_init(f"db/mars_explorer.db")
-    app.run(port=8000, host='127.0.0.1')
+    app.run(port=5000, host='127.0.0.1')
 
 
 @app.route("/")
@@ -88,23 +90,32 @@ def logout():
 
 
 @app.route('/addjob', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def add_jobs():
-    form = JobsForm()
+    form = ProductForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         prod = Product()
-        prod.job = form.job.data
-        prod.team_leader = form.team_leader.data
-        prod.work_size = form.work_size.data
-        prod.collaborators = form.collaborators.data
-        prod.is_finished = form.is_finished.data
-        current_user.jobs.append(prod)
+        prod.seller = current_user.id
+        prod.product = form.product.data
+        # add photo to a folder and rename it
+        picture = form.post_picture.data
+        prod.price = form.price.data
+        prod.weight = form.weight.data
+        save_image(picture)
+        prod.picture = '1.py'
+        prod.price = form.price.data
+        current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
     return render_template('jobs.html', title='Добавление новости',
                            form=form)
+
+
+def save_image(image):
+    with open('static/img/1.png', 'wb') as f:
+        f.write(image)
 
 
 @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
@@ -126,8 +137,8 @@ def edit_jobs(id):
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                          ((Jobs.leader == current_user) | (current_user.id == 1))
+        jobs = db_sess.query(Product).filter(Product.id == id,
+                                          ((Product.leader == current_user) | (current_user.id == 1))
                                           ).first()
         if jobs:
             jobs.job = form.job.data
@@ -149,8 +160,8 @@ def edit_jobs(id):
 @login_required
 def jobs_delete(id):
     db_sess = db_session.create_session()
-    jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                      ((Jobs.leader == current_user) | (current_user.id == 1))
+    jobs = db_sess.query(Product).filter(Product.id == id,
+                                      ((Product.leader == current_user) | (current_user.id == 1))
                                       ).first()
     if jobs:
         db_sess.delete(jobs)
