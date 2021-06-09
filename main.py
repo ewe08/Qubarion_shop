@@ -34,6 +34,14 @@ def index():
     return render_template("index.html", prods=prods)
 
 
+@app.route('/info')
+@login_required
+def info():
+    db_sess = db_session.create_session()
+    all_user_products = db_sess.query(Products).filter(Products.seller == current_user.id)
+    return render_template("info.html", user=current_user, prods=all_user_products)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -98,7 +106,7 @@ def add_prod():
         db_sess.merge(current_user)
         db_sess.commit()
         f = form.post_picture.data
-        save_image(f, prod.id)
+        # save_image(f, prod.id)
         return redirect('/')
     return render_template('jobs.html', title='Добавление Товара',
                            form=form)

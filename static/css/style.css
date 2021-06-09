@@ -26,7 +26,15 @@ h4 {
     margin-right: auto;
 }
 
-.table {
-    display: flex;
+.cells {
+    display:table-cell;
+    float: left
 }
+
+.table {
+    width: .98;
+    align: center;
+    display: table;
+}
+
 
