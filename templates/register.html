@@ -60,7 +60,13 @@
     </p>
     <p>
         {{ form.place.label }}<br>
-        {{ form.place(class="form-control") }}<br>
+         <select class="form-control" id="classSelect" name="class">
+                                          <option>Глубокий каньон</option>
+                                          <option>Огненный океан</option>
+                                          <option>Зернистая пустыня</option>
+
+                                        </select>
+        <br>
         {% for error in form.place.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
