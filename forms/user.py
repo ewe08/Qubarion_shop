@@ -10,8 +10,7 @@ class RegisterForm(FlaskForm):
     password_again = PasswordField('Password again', validators=[DataRequired()])
     surname = StringField('Surname', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
-    age = StringField("age")
+
     position = StringField("position")
-    speciality = StringField("speciality")
-    address = StringField("address")
+    place = StringField("place")
     submit = SubmitField('submit')

@@ -8,7 +8,7 @@ from werkzeug.exceptions import abort
 from data import db_session
 from data.products import Product
 from data.users import User
-from data.departments import Department
+#from data.departments import Department
 from forms.user import RegisterForm
 from forms.login import LoginForm
 from forms.products import ProductForm
@@ -39,7 +39,7 @@ def index():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():
+def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -52,13 +52,10 @@ def reqister():
                                    form=form,
                                    message="Такой пользователь уже есть")
         user = User(
-            surname=form.surname.data,
             name=form.name.data,
+            surname=form.surname.data,
             email=form.email.data,
-            age=form.age.data,
-            position=form.position.data,
-            speciality=form.speciality.data,
-            address=form.address.data,
+            place=form.place.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)
