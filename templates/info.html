@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>{{user.name}} {{user.surname}}</h3>
+<h3>Количество проданных товаров: {{user.already_sold}}</h3>
+<h3>Товары в продаже:</h3>
+
+<div class="table">
+    {% for item in prods%}
+    <div class="cells">
+        <div class="card" style="width: 18rem;">
+            <h2>{{item.product}}</h2>
+          <img class="card-img-top" src="static/img/{{ item.id }}.jpg" alt="Card image cap">
+          <div class="card-body">
+              <p class="card-text">Цена: <b>{{item.price}}</b></p>
+              <p class="card-text">Вес: <b>{{item.weight}}</b></p>
+              <p class="card-text">Дата продажи: <b>{{item.date}}</b></p>
+          </div>
+          <div>
+         {% if current_user.is_authenticated and (current_user == item.leader)%}
+            <div>
+                <a href="/prod/{{ item.id }}" class="btn btn-warning">
+                    Edit job
+                </a>
+                <a href="/prod_delete/{{ item.id }}" class="btn btn-danger">
+                    Delete job
+                </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+{% endblock %}

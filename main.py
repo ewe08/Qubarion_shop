@@ -29,14 +29,17 @@ def main():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
-
-
-@app.route("/shop")
-def shop():
     db_sess = db_session.create_session()
     prods = db_sess.query(Products).all()
-    return render_template("shop.html", prods=prods)
+    return render_template("index.html", prods=prods)
+
+
+@app.route('/info')
+@login_required
+def info():
+    db_sess = db_session.create_session()
+    all_user_products = db_sess.query(Products).filter(Products.seller == current_user.id)
+    return render_template("info.html", user=current_user, prods=all_user_products)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -102,58 +105,70 @@ def add_prod():
         current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/shop')
-    return render_template('products.html', title='Добавление Товара',
+        f = form.post_picture.data
+        # save_image(f, prod.id)
+        return redirect('/')
+    return render_template('jobs.html', title='Добавление Товара',
                            form=form)
 
 
-@app.route('/prod/<int:id>', methods=['GET', 'POST'])
+def save_image(data, name):
+    with open(f'static/img/{name}.jpg', 'wb') as handler:
+        handler.write(data)
+
+
+"""@app.route('/jobs/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_prod(id):
-    form = ProductForm()
+def edit_jobs(id):
+    form = JobsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        prod = db_sess.query(Products).filter(Products.id == id,
-                                              Products.leader == current_user
-                                              ).first()
+        prod = db_sess.query(Product).filter(Product.id == id,
+                                             ((Product.leader == current_user) | (current_user.id == 1))
+                                             ).first()
         if prod:
-            form.product.data = prod.product
-            form.price.data = prod.price
-            form.weight.data = prod.weight
+            form.job.data = prod.job
+            form.team_leader.data = prod.team_leader
+            form.work_size.data = prod.work_size
+            form.collaborators.data = prod.collaborators
+            form.is_finished.data = prod.is_finished
         else:
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        prod = db_sess.query(Products).filter(Products.id == id,
-                                              (Products.leader == current_user)
-                                              ).first()
-        if prod:
-            prod.product = form.product.data
-            prod.price = form.price.data
-            prod.weight = form.weight.data
+        jobs = db_sess.query(Product).filter(Product.id == id,
+                                          ((Product.leader == current_user) | (current_user.id == 1))
+                                          ).first()
+        if jobs:
+            jobs.job = form.job.data
+            jobs.team_leader = form.team_leader.data
+            jobs.work_size = form.work_size.data
+            jobs.collaborators = form.collaborators.data
+            jobs.is_finished = form.is_finished.data
             db_sess.commit()
-            return redirect('/shop')
+            return redirect('/')
         else:
             abort(404)
-    return render_template('products.html',
+    return render_template('jobs.html',
                            title='Редактирование задания',
                            form=form
                            )
 
 
-@app.route('/prod_delete/<int:id>', methods=['GET', 'POST'])
+@app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def prod_delete(id):
+def jobs_delete(id):
     db_sess = db_session.create_session()
-    prod = db_sess.query(Products).filter(Products.id == id,
-                                          Products.leader == current_user).first()
-    if prod:
-        db_sess.delete(prod)
+    jobs = db_sess.query(Product).filter(Product.id == id,
+                                      ((Product.leader == current_user) | (current_user.id == 1))
+                                      ).first()
+    if jobs:
+        db_sess.delete(jobs)
         db_sess.commit()
     else:
         abort(404)
-    return redirect('/shop')
+    return redirect('/')
 
-
+"""
 if __name__ == '__main__':
     main()

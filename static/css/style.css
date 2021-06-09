@@ -18,6 +18,13 @@ h4 {
 .navigation{
     display: flex;
 }
+.navigation a{
+   margin-left: auto;
+}
+
+.navigation p{
+    margin-right: auto;
+}
 
 .nav{
     margin-left: 150px;
@@ -29,19 +36,28 @@ h4 {
     text-decoration: none;
     font-size: 26px;
 }
-
-.logout{
-   margin-left: auto;
-}
-
 .login{
     margin-left: auto;
     margin-right: 0em;
 
 }
+.logout{
+   margin-left: auto;
+}
 
 .table {
     display: flex;
+}
+
+.cells {
+    display:table-cell;
+    float: left
+}
+
+.table {
+    width: .98;
+    align: center;
+    display: table;
 }
 
 .home{
