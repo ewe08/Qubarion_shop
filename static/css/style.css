@@ -18,13 +18,6 @@ h4 {
 .navigation{
     display: flex;
 }
-.navigation a{
-   margin-left: auto;
-}
-
-.navigation p{
-    margin-right: auto;
-}
 
 .nav{
     margin-left: 150px;
