@@ -22,6 +22,15 @@
             </p>
         {% endfor %}
     </p>
+        <p>
+        {{ form.weight.label }}<br>
+        {{ form.weight(class="form-control") }}<br>
+        {% for error in form.weight.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
     <p>
         {{ form.post_picture.label }}<br>
         {{ form.post_picture(class="form-control") }}<br>

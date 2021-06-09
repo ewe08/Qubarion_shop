@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Works log</h1>
+<h1>Каталог товаров</h1>
 {% if current_user.is_authenticated %}
-    <a href="addjob" class="btn btn-secondary">Add a job</a>
-    <a href="departments" class="btn btn-secondary">Go to Departments</a>
+    <a href="addprod" class="btn btn-secondary">Add a product</a>
 {% endif %}
-{% for item in jobs%}
+{% for item in prod%}
 <h2>Action #{{item.id}}</h2>
 <table class="table">
     <tr class="table-active">
@@ -17,24 +16,13 @@
         <td>Hazard category</td>
         <td>is finished</td>
     </tr>
-    <tr class="table-primary">
-        <td>{{ item.job }}</td>
-        <td>{{ item.leader.name }} {{ item.leader.surname }}</td>
-        <td>{{ item.work_size }} hours</td>
-        <td>{{ item.collaborators }}</td>
-        <td>{{ item.categories }}</td>
-        {% if item.is_finished %}
-        <td class="table-success">Is finished
-            {% else %}
-        <td class="table-danger">Is not finished{% endif %}</td>
-    </tr>
 </table>
-{% if current_user.is_authenticated and (current_user == item.leader or current_user.id == 1)%}
+{% if current_user.is_authenticated and (current_user == item.leader)%}
     <div>
-        <a href="/jobs/{{ item.id }}" class="btn btn-warning">
+        <a href="/prod/{{ item.id }}" class="btn btn-warning">
             Edit job
         </a>
-        <a href="/jobs_delete/{{ item.id }}" class="btn btn-danger">
+        <a href="/prod_delete/{{ item.id }}" class="btn btn-danger">
             Delete job
         </a>
     </div>

@@ -1,18 +1,14 @@
-import PIL
-
 from flask import render_template, redirect, request
 from flask import Flask
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.exceptions import abort
 
 from data import db_session
-from data.products import Product
+from data.products import Products
 from data.users import User
-#from data.departments import Department
 from forms.user import RegisterForm
 from forms.login import LoginForm
 from forms.products import ProductForm
-from forms.departments import DepartmentsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -34,8 +30,8 @@ def main():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    jobs = db_sess.query(Product).all()
-    return render_template("index.html", jobs=jobs)
+    prods = db_sess.query(Products).all()
+    return render_template("index.html", prods=prods)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -86,36 +82,29 @@ def logout():
     return redirect("/")
 
 
-@app.route('/addjob', methods=['GET', 'POST'])
-# @login_required
-def add_jobs():
+@app.route('/addprod', methods=['GET', 'POST'])
+@login_required
+def add_prod():
     form = ProductForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        prod = Product()
-        prod.seller = current_user.id
-        prod.product = form.product.data
-        # add photo to a folder and rename it
-        picture = form.post_picture.data
-        prod.price = form.price.data
-        prod.weight = form.weight.data
-        save_image(picture)
-        prod.picture = '1.py'
-        prod.price = form.price.data
+        prod = Products(
+            seller=current_user.id,
+            product=form.product.data,
+            price=form.price.data,
+            weight=form.weight.data
+        )
         current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
+        print(form.post_picture.data)
+
         return redirect('/')
-    return render_template('jobs.html', title='Добавление новости',
+    return render_template('jobs.html', title='Добавление Товара',
                            form=form)
 
 
-def save_image(image):
-    with open('static/img/1.png', 'wb') as f:
-        f.write(image)
-
-
-@app.route('/jobs/<int:id>', methods=['GET', 'POST'])
+"""@app.route('/jobs/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_jobs(id):
     form = JobsForm()
@@ -167,86 +156,6 @@ def jobs_delete(id):
         abort(404)
     return redirect('/')
 
-
-@app.route("/departments")
-def departments():
-    db_sess = db_session.create_session()
-    deps = db_sess.query(Department)
-    return render_template("department.html", deps=deps)
-
-
-@app.route('/adddep', methods=['GET', 'POST'])
-@login_required
-def add_dep():
-    form = DepartmentsForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        dep = Department()
-        dep.title = form.title.data
-        dep.chief = form.chief.data
-        dep.members = form.members.data
-        dep.email = form.email.data
-        current_user.deps.append(dep)
-        db_sess.merge(current_user)
-        db_sess.commit()
-        return redirect('/departments')
-    return render_template('add_dep.html', title='Добавление',
-                           form=form)
-
-
-@app.route('/dep_delete/<int:id>', methods=['GET', 'POST'])
-@login_required
-def dep_delete(id):
-    db_sess = db_session.create_session()
-    dep = db_sess.query(Department).filter(Department.id == id,
-                                           ((Department.user == current_user) | (
-                                                   current_user.id == 1))
-                                           ).first()
-    if dep:
-        db_sess.delete(dep)
-        db_sess.commit()
-    else:
-        abort(404)
-    return redirect('/departments')
-
-
-@app.route('/dep/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_dep(id):
-    form = DepartmentsForm()
-    if request.method == "GET":
-        db_sess = db_session.create_session()
-        dep = db_sess.query(Department).filter(Department.id == id,
-                                               ((Department.user == current_user) | (
-                                                       current_user.id == 1))
-                                               ).first()
-        if dep:
-            form.title.data = dep.title
-            form.chief.data = dep.chief
-            form.members.data = dep.members
-            form.email.data = dep.email
-        else:
-            abort(404)
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        dep = db_sess.query(Department).filter(Department.id == id,
-                                               ((Department.user == current_user) | (
-                                                       current_user.id == 1))
-                                               ).first()
-        if dep:
-            dep.title = form.title.data
-            dep.chief = form.chief.data
-            dep.members = form.members.data
-            dep.email = form.email.data
-            db_sess.commit()
-            return redirect('/departments')
-        else:
-            abort(404)
-    return render_template('add_dep.html',
-                           title='Редактирование',
-                           form=form
-                           )
-
-
+"""
 if __name__ == '__main__':
     main()
