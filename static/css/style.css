@@ -36,6 +36,8 @@ h4 {
 }
 .logout{
    margin-left: auto;
+   width: fit-content;
+   block-size: fit-content;
 }
 
 .table {
@@ -61,4 +63,11 @@ h4 {
 .home:hover{
     text-decoration: underline;
     color: grey;
+}
+.balance_box{
+    margin-left: auto;
+}
+.balance{
+    width: fit-content;
+    block-size: fit-content;
 }

@@ -21,6 +21,7 @@ class User(SqlAlchemyBase, UserMixin):
                                      default=datetime.datetime.now)
     place = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     already_sold = sqlalchemy.Column(sqlalchemy.Integer, default=0, nullable=True)
+    balance = sqlalchemy.Column(sqlalchemy.Integer, default=0, nullable=True)
     products = orm.relation("Products", back_populates='leader')
 
     def set_password(self, password):

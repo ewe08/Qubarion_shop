@@ -31,6 +31,17 @@ def main():
 def index():
     return render_template("index.html")
 
+@app.route('/money', methods=['GET', 'POST'])
+@login_required
+def money():
+    if request.method == 'GET':
+        return render_template('money.html')
+    elif request.method == 'POST':
+        db_sess = db_session.create_session()
+        a = db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
+        print(a)
+        db_sess.commit()
+        return render_template('money.html')
 
 @app.route('/info')
 @login_required

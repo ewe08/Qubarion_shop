@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<form class="login_form" method="post">
+    <h1>Пополнение Баланса</h1>
+    <input type="balance" class="form-control" id="balance" aria-describedby="balanceHelp" placeholder="Введите сумму" name="balance">
+
+    <label for="form-check">Выберите платежную систему</label>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sex" id="male" value="male" checked>
+      <label class="form-check-label" for="male">
+        Кубарион Деньги
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sex" id="female" value="female">
+      <label class="form-check-label" for="female">
+        Qibi
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sex" id="a" value="female">
+      <label class="form-check-label" for="female">
+        BananaPay
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Записаться</button>
+</form>
+{% endblock %}

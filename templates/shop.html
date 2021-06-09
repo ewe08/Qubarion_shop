@@ -8,7 +8,7 @@
 
 <div class="table">
     {% for item in prods%}
-    <div>
+    <div class="cells">
         <div class="card" style="width: 18rem;">
             <h2>{{item.product}}</h2>
           <img class="card-img-top" src="static/img/{{ item.id }}.jpg" alt="Card image cap">
@@ -25,6 +25,14 @@
                 </a>
                 <a href="/prod_delete/{{ item.id }}" class="btn btn-danger">
                     Delete job
+                </a>
+            </div>
+            {% endif %}
+
+         {% if current_user.is_authenticated and (current_user != item.leader)%}
+            <div>
+                <a href="/prod/{{ item.id }}" class="btn btn-success">
+                    Купить
                 </a>
             </div>
             {% endif %}
