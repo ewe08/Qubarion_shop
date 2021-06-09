@@ -5,27 +5,32 @@
 {% if current_user.is_authenticated %}
     <a href="addprod" class="btn btn-secondary">Add a product</a>
 {% endif %}
-{% for item in prod%}
-<h2>Action #{{item.id}}</h2>
-<table class="table">
-    <tr class="table-active">
-        <td>Title of activity</td>
-        <td>Team leader</td>
-        <td>Duration</td>
-        <td>List of collaborators</td>
-        <td>Hazard category</td>
-        <td>is finished</td>
-    </tr>
-</table>
-{% if current_user.is_authenticated and (current_user == item.leader)%}
-    <div>
-        <a href="/prod/{{ item.id }}" class="btn btn-warning">
-            Edit job
-        </a>
-        <a href="/prod_delete/{{ item.id }}" class="btn btn-danger">
-            Delete job
-        </a>
-    </div>
-{% endif %}
-{% endfor %}
+
+<div class="table">
+    {% for item in prods%}
+        <div class="card" style="width: 18rem;">
+            <h2>{{item.product}}</h2>
+          <img class="card-img-top" src="static/img/{{ item.id }}.jpg" alt="Card image cap">
+          <div class="card-body">
+              <p class="card-text">Цена: <b>{{item.price}}</b></p>
+              <p class="card-text">Вес: <b>{{item.weight}}</b></p>
+              <p class="card-text">Дата продажи: <b>{{item.date}}</b></p>
+
+          </div>
+            {% if current_user.is_authenticated and (current_user == item.leader)%}
+            <div>
+                <a href="/prod/{{ item.id }}" class="btn btn-warning">
+                    Edit job
+                </a>
+                <a href="/prod_delete/{{ item.id }}" class="btn btn-danger">
+                    Delete job
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+    {% endfor %}
+</div>
+
+
 {% endblock %}

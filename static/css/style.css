@@ -25,3 +25,11 @@ h4 {
 .navigation p{
     margin-right: auto;
 }
+
+.table {
+    display: flex;
+}
+
+.table a {
+    background-color: transparent;
+}
