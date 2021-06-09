@@ -21,6 +21,7 @@ login_manager.init_app(app)
              (['Глубокий каньон', "Сернистая пустыня"], 204),
              (['Огненный океан', "Глубокий каньон"], 170)]"""
 
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -29,7 +30,8 @@ def load_user(user_id):
 
 def main():
     db_sess = db_session.global_init(f"db/Qubarion.db")
-    app.run(port=5000, host='127.0.0.1')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 
 @app.route("/")
@@ -45,7 +47,8 @@ def money():
     elif request.method == 'POST':
         db_sess = db_session.create_session()
         try:
-            db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
+            db_sess.query(User).filter(User.id == current_user.id).update(
+                {User.balance: User.balance + int(request.form['balance'])})
             db_sess.commit()
         except ValueError:
             return render_template('money.html',
