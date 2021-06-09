@@ -97,8 +97,6 @@ def add_prod():
         current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
-        print(form.post_picture.data)
-
         return redirect('/')
     return render_template('jobs.html', title='Добавление Товара',
                            form=form)
