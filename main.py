@@ -14,7 +14,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+"""distances = [(['Огненный океан', "Сернистая пустыня"], 289),
+             (['Глубокий каньон', "Сернистая пустыня"], 204),
+             (['Огненный океан', "Глубокий каньон"], 170)]"""
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -31,6 +33,7 @@ def main():
 def index():
     return render_template("index.html")
 
+
 @app.route('/money', methods=['GET', 'POST'])
 @login_required
 def money():
@@ -38,10 +41,12 @@ def money():
         return render_template('money.html')
     elif request.method == 'POST':
         db_sess = db_session.create_session()
-        a = db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
+        a = db_sess.query(User).filter(User.id == current_user.id).update(
+            {User.balance: User.balance + int(request.form['balance'])})
         print(a)
         db_sess.commit()
-        return render_template('money.html')
+        return render_template('shop.html')
+
 
 @app.route('/info')
 @login_required
@@ -171,6 +176,23 @@ def prod_delete(id):
         db_sess.commit()
     else:
         abort(404)
+    return redirect('/shop')
+
+
+@app.route('/prod_sell/<int:id>', methods=['GET', 'POST'])
+@login_required
+def sell_prod(id):
+    db_sess = db_session.create_session()
+    prod = db_sess.query(Products).filter(Products.id == id).first()
+    if current_user.balance >= prod.price and prod:
+        prod.leader.already_sold += 1
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
+        user.balance -= prod.price
+        db_sess.delete(prod)
+        db_sess.commit()
+    else:
+        return render_template('shop.html',
+                               message="Недостаточно денег")
     return redirect('/shop')
 
 

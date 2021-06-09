@@ -22,7 +22,11 @@
                 <a class="nav__link" href="/shop">Магазин</a>
             </nav>
             {% if current_user.is_authenticated %}
-            <a class="navbar-brand logout" href="/logout">{{ current_user.name }}</a>
+            <div class="balance_box">
+                <a class="navbar-brand balance" href="/info">{{ current_user.name }}</a><br>
+                <a class="navbar-brand balance" href="/money">Ваш Баланс: {{
+                    current_user.balance}}</a>
+            </div>
             {% else %}
             <div class="login">
                 <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
