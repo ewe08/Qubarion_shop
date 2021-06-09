@@ -21,6 +21,7 @@ login_manager.init_app(app)
              (['Глубокий каньон', "Сернистая пустыня"], 204),
              (['Огненный океан', "Глубокий каньон"], 170)]"""
 
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -40,7 +41,8 @@ def money():
     elif request.method == 'POST':
         db_sess = db_session.create_session()
         try:
-            db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
+            db_sess.query(User).filter(User.id == current_user.id).update(
+                {User.balance: User.balance + int(request.form['balance'])})
             db_sess.commit()
         except ValueError:
             return render_template('money.html',
