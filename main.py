@@ -2,6 +2,8 @@ from flask import render_template, redirect, request
 from flask import Flask
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
+import os
 
 from data import db_session
 from data.products import Products
@@ -12,6 +14,7 @@ from forms.products import ProductForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOAD_FOLDER'] = r'static\img'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -39,7 +42,6 @@ def money():
     elif request.method == 'POST':
         db_sess = db_session.create_session()
         a = db_sess.query(User).filter(User.id == current_user.id).update({User.balance: User.balance + int(request.form['balance'])})
-        print(a)
         db_sess.commit()
         return render_template('money.html')
 
@@ -121,6 +123,9 @@ def add_prod():
         current_user.products.append(prod)
         db_sess.merge(current_user)
         db_sess.commit()
+        img = form.post_picture.data
+        obj = str(db_sess.query(Products)[-1].id)
+        img.save(os.path.join(app.config['UPLOAD_FOLDER'], f'{obj}.png'))
         return redirect('/shop')
     return render_template('products.html', title='Добавление Товара',
                            form=form)
