@@ -1,4 +1,4 @@
-import sqlalchemy
+"""import sqlalchemy
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
@@ -15,3 +15,4 @@ class Department(SqlAlchemyBase):
     members = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
     user = orm.relation('User')
+"""
