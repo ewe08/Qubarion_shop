@@ -15,7 +15,7 @@
           <div class="card-body">
               <p class="card-text">Цена: <b>{{item.price}}</b></p>
               <p class="card-text">Вес: <b>{{item.weight}}</b></p>
-              <p class="card-text">Дата продажи: <b>{{item.date}}</b></p>
+              <p class="card-text">Продаёт: <b>{{item.leader.name}} {{item.leader.surname}}</b></p>
           </div>
           <div>
          {% if current_user.is_authenticated and (current_user == item.leader)%}

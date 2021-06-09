@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Adding a Job</h1>
+<h1>Добавление товара</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
@@ -22,7 +22,7 @@
             </p>
         {% endfor %}
     </p>
-        <p>
+    <p>
         {{ form.weight.label }}<br>
         {{ form.weight(class="form-control") }}<br>
         {% for error in form.weight.errors %}
